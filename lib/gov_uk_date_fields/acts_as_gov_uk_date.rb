@@ -28,17 +28,17 @@ module GovUkDateFields
             next if self.instance_variable_get("@_#{date_field}".to_sym).valid?
             case options[:error_clash_behaviour]
             when :append_gov_uk_date_field_error
-              errors[date_field] << "Invalid date"
+              errors.add(date_field, "Invalid date")
             when :omit_gov_uk_date_field_error
               next
             when :override_with_gov_uk_date_field_error
               errors[date_field].clear
-              errors[date_field] << "Invalid date"
+              errors.add(date_field, "Invalid date")
             end
           end
         end
 
-        # For each of the gov uk date fields, we have to define the following 
+        # For each of the gov uk date fields, we have to define the following
         # instance methods (assuming the date field name is dob):
         #
         # * dob       - retuns the date object (i.e. @_dob.date)
@@ -76,19 +76,19 @@ module GovUkDateFields
           end
 
           # #dob_dd= - set the day part of the date (used in population of model from form)
-          define_method("#{field}_dd=") do |day| 
+          define_method("#{field}_dd=") do |day|
             GovUkDateFields::FormDate.set_date_part(:dd, self, field, day)
-          end   
+          end
 
           # #dob_dd= - set the day part of the date (used in population of model from form)
-          define_method("#{field}_mm=") do |month| 
+          define_method("#{field}_mm=") do |month|
             GovUkDateFields::FormDate.set_date_part(:mm, self, field, month)
-          end   
+          end
 
           # #dob_dd= - set the day part of the date (used in population of model from form)
-          define_method("#{field}_yyyy=") do |year| 
+          define_method("#{field}_yyyy=") do |year|
             GovUkDateFields::FormDate.set_date_part(:yyyy, self, field, year)
-          end   
+          end
 
         end
 
