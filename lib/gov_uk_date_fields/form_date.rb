@@ -50,8 +50,13 @@ module GovUkDateFields
       else
         months = %w{ jan feb mar apr may jun jul aug sep oct nov dec }
         mm_as_int = months.include?(@mm.downcase) ? months.index(@mm.downcase) + 1 : @mm.to_i
+        year_as_int = @yyyy.to_i
         begin
-          @date = Date.new(@yyyy.to_i, mm_as_int, @dd.to_i)
+          if year_as_int < 1900 || year_as_int > Time.now.year
+            @valid = false
+            return
+          end
+          @date = Date.new(year_as_int, mm_as_int, @dd.to_i)
         rescue ArgumentError => err
           raise err unless err.message == 'invalid date'
           @valid = false
@@ -104,10 +109,12 @@ module GovUkDateFields
     def validate_date
       return true if @dd.blank? && @mm.blank? && @yyyy.blank?
       months = %w{ jan feb mar apr may jun jul aug sep oct nov dec }
-
       mm_as_int = months.include?(@mm.downcase) ? months.index(@mm.downcase) + 1 : @mm.to_i
+      year_as_int = @yyyy.to_i
       begin
-        @date = Date.new(@yyyy.to_i, mm_as_int, @dd.to_i)
+        return false if year_as_int < 1900 || year_as_int > Time.now.year
+
+        @date = Date.new(year_as_int, mm_as_int, @dd.to_i)
       rescue ArgumentError => err
         return false if err.message == 'invalid date'
         raise err
